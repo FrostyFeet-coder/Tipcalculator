@@ -26,14 +26,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvTotalAmount: TextView
     private lateinit var tvTipDescription: TextView
     private lateinit var tvBillPerPerson: TextView
-    private lateinit var tvNoofpeople: EditText // Declare tvNoofpeople here
+    private lateinit var tvNoofpeople: EditText // tvNoofpeople yahan declare kiya
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        // Set padding for system bars
+        // System bars ke liye padding set karo
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.tvnooffreinds)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -43,16 +43,16 @@ class MainActivity : AppCompatActivity() {
         etBaseAmount = findViewById(R.id.etBaseAmount)
         seekBar = findViewById(R.id.seekBar)
         tvTipPercentLabel = findViewById(R.id.tvTipPercentLabel)
-        tvTipAmount = findViewById(R.id.tvTipAmouunt) // Fixed typo here
+        tvTipAmount = findViewById(R.id.tvTipAmouunt) // Typo fix kiya
         tvTotalAmount = findViewById(R.id.tvTotalAmount)
         tvTipDescription = findViewById(R.id.tvTipDescription)
         tvBillPerPerson = findViewById(R.id.tvBillPerPerson)
         tvNoofpeople = findViewById(R.id.tvNoofpeople)
 
-        // Set initial tip description
+        // Initial tip description set karo
         updateTipDescription(INITIAL_TIP_PERCENT)
 
-        // Set initial tip percent
+        // Initial tip percent set karo
         seekBar.progress = INITIAL_TIP_PERCENT
         tvTipPercentLabel.text = "$INITIAL_TIP_PERCENT%"
         tvTipDescription.text = "Good"
@@ -62,52 +62,48 @@ class MainActivity : AppCompatActivity() {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 Log.i(TAG, "on progress changed $progress")
                 tvTipPercentLabel.text = "$progress%"
-                computeTip() // Recompute tip when progress changes
+                computeTip() // Jab progress change ho, tip dubara calculate karo
                 updateTipDescription(progress)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // Code to handle start of tracking
+                // Tracking start hone pe kuch nahi karna
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // Code to handle stop of tracking
+                // Tracking stop hone pe kuch nahi karna
             }
         })
 
-        // TextWatcher for base amount
+        // Base amount ke liye TextWatcher
         etBaseAmount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Not implemented but could be used if needed
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Not implemented but could be used if needed
             }
 
             override fun afterTextChanged(s: Editable?) {
                 Log.i(TAG, "after text changed $s")
-                computeTip() // Recompute tip when base amount changes
+                computeTip() // Jab base amount change ho, tip dubara calculate karo
             }
         })
 
-        // TextWatcher for number of people
+        // Number of people ke liye TextWatcher
         tvNoofpeople.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Not implemented
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Not implemented
             }
 
             override fun afterTextChanged(s: Editable?) {
-                perpersonbill() // Recompute bill per person when the number of people changes
+                perpersonbill() // Jab number of people change ho, per person bill dubara calculate karo
             }
         })
     }
 
-    // Helper function to safely get the base amount as Double
+    // Helper function jo safely base amount ko Double mein convert kare
     private fun getBaseAmount(): Double {
         val baseAmountString = etBaseAmount.text.toString()
         return try {
@@ -118,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Function to compute the tip and total
+    // Tip aur total calculate karne ka function
     private fun computeTip() {
         val baseAmount = getBaseAmount()
         if (baseAmount == 0.0) {
@@ -135,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         tvTotalAmount.text = String.format("%.2f", totalAmount)
     }
 
-    // Function to update the bill per person
+    // Bill per person ko update karne ka function
     private fun perpersonbill() {
         val baseAmount = getBaseAmount()
         if (baseAmount == 0.0) {
@@ -169,9 +165,9 @@ class MainActivity : AppCompatActivity() {
         tvBillPerPerson.text = String.format("%.2f", billPerPerson)
     }
 
-    // Function to update tip description and color
+    // Tip description aur color update karne ka function
     private fun updateTipDescription(progress: Int) {
-        // Update the description based on the progress
+        // Progress ke hisaab se description update karo
         val tipDescription = when (progress) {
             in 0..9 -> "Poor"
             in 10..14 -> "Acceptable"
@@ -181,14 +177,14 @@ class MainActivity : AppCompatActivity() {
         }
         tvTipDescription.text = tipDescription
 
-        // Smooth color transition from red to green based on the progress
+        // Red se green tak smooth color transition karo progress ke hisaab se
         val color = ArgbEvaluator().evaluate(
             progress.toFloat() / seekBar.max.toFloat(),
             ContextCompat.getColor(this, R.color.worst_tip), // Red
             ContextCompat.getColor(this, R.color.best_tip)  // Green
         ) as Int
 
-        // Update the text color with the interpolated color
+        // Interpolated color ke saath text color update karo
         tvTipDescription.setTextColor(color)
     }
 }
